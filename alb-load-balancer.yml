@@ -1,0 +1,87 @@
+AWSTemplateFormatVersion: 2022-15-02
+
+Description: This Template create an Application Load balancer
+ 
+Metadata:
+  AWS::CloudFormation::Interface: 
+    ParameterGroups:
+      - 
+        Label: 
+          default: "Certificate Arn"
+        Parameters:
+          - AcmCertificate
+      - 
+        Label: 
+          default: "Export VPC Stack Name"
+        Parameters:
+          - ExportVpcStackName
+
+Parameters:
+  AcmCertificate:
+    Description: The Arn of the AWS Certificate Manager's Certificate
+    Type: String
+
+  ExportVpcStackName:
+    Description: The name of the vpc stack that exports values 
+    Type: String
+
+
+
+Rules:
+
+Resources:
+#Create an Application Load Balancer
+  ApplicationLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: TestAppLoadbalancer
+      SecurityGroups:
+      Subnets: 
+
+#Create a Listener on Port 80
+  ALBListenerNoSslCertificate:
+    Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Properties:
+      DefaultActions:
+        - RedirectConfig:
+            Host: '#{host}'
+            Path: '/#{path}'
+            Port: '443'
+            Protocol: HTTPS
+            StatusCode: HTTP_301
+          Type: 
+      LoadBalancerArn:
+      Port:
+      Protocol:
+
+#Create a Listener on Port 443
+  ALBListenerSslCertificate:
+    Type : AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      Certificates:
+        - CertificateArn:
+      DefaultActions:
+        - Type:
+          TargetGroupArn:
+      LoadBalancerArn:
+      Port:
+      Protocol:
+
+# Create a Target Group
+  ALBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds:
+      HealthCheckPath: 
+      HealthCheckTimeoutSeconds: 
+      HealthyThresholdCount:
+      Matcher:
+        HttpCode: 
+      Name:
+      Port:
+      Protocol:
+      UnhealthyThresholdCount:
+      VpcId:
+
+Outputs:
+
